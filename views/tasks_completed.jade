@@ -2,24 +2,19 @@ extends layout
 
 block content
 	.menu
-		h2 Menu
-		ul.nav.nav-pills
-			li
-				a(href="/") Home
-			li
-				a(href="/tasks") Todo List
-			li.active
-				a(href="/tasks/completed") Completed
+		div.list-group
+			a(href="/", class="list-group-item") Home
+			a(href="/tasks", class="list-group-item") Todo List
+			a(href="/tasks/completed", class="list-group-item active") Completed
 
 
 	h1=title
 	.list
 		if (tasks.length === 0)
 			| No tasks.
+		ul.list-group
 		each task, index in tasks
-			.item
+			li.list-group-item
 				div.num
-					span=index+1
-						|.&nbsp;
-				div.name.completed-task
-					span.name=task.name
+					span.name=index+1
+					task.name.completed-task=task.name

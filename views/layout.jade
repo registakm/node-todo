@@ -3,6 +3,7 @@ html
     head
         title= title + '|' + appname
         link(rel="stylesheet", href="/stylesheets/style.css")
+        meta(name="viewport", content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no")
         link(rel="stylesheet", href="/bootstrap/bootstrap.css")
         link(rel="stylesheet", href="/stylesheets/main.css")
     body
@@ -12,8 +13,6 @@ html
                     .navbar-header
                         a.navbar-brand(href="/")= appname
             .alert.alert-dismissable
-            h1= title
-            p node Todo App
             block content
     script(src='/javascripts/jquery.js', type="text/javascript")
     script(src='/javascripts/main.js', type="text/javascript")

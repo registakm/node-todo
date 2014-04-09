@@ -2,44 +2,35 @@ extends layout
 
 block content
   .menu
-    h2 Menu
-    ul.nav.nav-pills
-      li
-        a(href="/") Home
-      li.active
-        a(href="/tasks") Todo List
-      li
-        a(href="/tasks/completed") Completed
+    div.list-group.side-nav
+      a(href="/", class="list-group-item") Home
+      a(href="/tasks", class="list-group-item active") Todo List
+      a(href="/tasks/completed", class="list-group-item") Completed
 
   h1= title
 
   .list
-    .item.add-task
-      div.action
-        form(action="/tasks", method="POST")
-          input(type="hidden", value="true", name="all_done")
-          input(type="hidden", value=locals._csrf, name="_csrf")
-          input(type="submit", class="btn btn-success btn-xs", value="all done")
+    div.action
       form(action="/tasks", method="POST")
+        input(type="hidden", value="true", name="all_done")
+        input(type="hidden", value=locals._csrf, name="_csrf")
+        input(type="submit", class="btn btn-success btn-xs", value="all done")
+      form(action="/tasks", method="POST" role="form")
         input(type="hidden", value=locals._csrf, name="_csrf")
         div.name
-          input(type="text", name="name", placeholder="Add new task")
-        div.delete
-          input.btn.btn-primary.btn-sm(type="submit", value='add')
+          input(type="text", name="name", placeholder="Add new task", class="form-control")
+          input.btn.btn-primary.btn-sm.add(type="submit", value='add')
       if (tasks.length === 0)
         | No tasks.
-      each task, index in tasks
-        .item
-          div.action
-            form(action='/tasks/#{task._id}', method='post')
-              input(type="hidden", value=task._id.toString(), name="id")
-              input(type='hidden', value='true', name='completed')
-              input(type='hidden', value=locals._csrf, name='_csrf')
-              input(type='submit', class='btn btn-success btn-xs task-done', value='done')
-          div.num
-            span=index+1
-              |.&nbsp;
-          div.name
-            span.name=task.name
-          div.delete
-            a(class='btn btn-danger btn-xs task-delete', data-task-id=task._id.toString(), data-csrf=locals._csrf) delete
+      ul.list-group
+        each task, index in tasks
+          li.list-group-item
+            span=index+1+ task.name
+            span.action
+              form(action='/tasks/#{task._id}', method='post')
+                input(type="hidden", value=task._id.toString(), name="id")
+                input(type='hidden', value='true', name='completed')
+                input(type='hidden', value=locals._csrf, name='_csrf')
+                input(type='submit', class='btn btn-success btn-xs task-done', value='done')
+            span.delete
+              a(class='btn btn-danger btn-xs task-delete', data-task-id=task._id.toString(), data-csrf=locals._csrf) delete

@@ -34,7 +34,7 @@ exports.markAllCompleted = function (req, res, next) {
 	// check for the all_done parameter to decide if this request comes from the all done button or the add button
 	if (!req.body.all_done || req.body.all_done !== 'true') return next();
 	// If the execution come this far, we perform db query with multi: true
-	req.tasks.update(
+	req.db.tasks.update(
 	{completed: false},
 	{$set: {completed: true}},
 	{multi: true},
