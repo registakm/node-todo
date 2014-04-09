@@ -10,7 +10,8 @@ var http = require('http');
 var path = require('path');
 var lessMiddleware = require('less-middleware');
 var mongoskin = require('mongoskin');
-var db = mongoskin.db('mongodb://localhost:27017/todo?auto_reconnect', {safe: true});
+var uri = process.env.MONGOHQ_URL || 'mongodb://localhost:27017/todo?auto_reconnect';
+var db = mongoskin.db(uri, {safe: true});
 
 var app = express();
 
