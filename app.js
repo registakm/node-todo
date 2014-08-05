@@ -5,14 +5,15 @@
 
 var express = require('express');
 var routes = require('./routes');
-var tasks =require('./routes/tasks');
+var tasks = require('./routes/tasks');
+var login = require('./routes/login');
 var http = require('http');
 var path = require('path');
-var lessMiddleware = require('less-middleware');
+// var lessMiddleware = require('less-middleware');
 var mongoskin = require('mongoskin');
 var uri = process.env.MONGOHQ_URL || 'mongodb://localhost:27017/todo?auto_reconnect';
 var db = mongoskin.db(uri, {safe: true});
-
+var skinStore = require('connect-mongoskin');
 var app = express();
 
 app.use(function (req, res, next) {
@@ -20,6 +21,7 @@ app.use(function (req, res, next) {
 	// be able to perform database operations in the routes modules
 	req.db = {};
 	// store the tasks collection in every request
+	req.db.user = db.collection('user');
 	req.db.tasks = db.collection('tasks');
 	next();
 });
@@ -41,19 +43,29 @@ app.use(express.methodOverride());
 
 // To use CSRF, we need cookieParser() and session()
 app.use(express.cookieParser());
-app.use(express.session({secret: '59B93087-78BC-4EB9-993A-A61FC844F6C9'}));
-app.use(express.csrf());
+// app.use(express.session({secret: '59B93087-78BC-4EB9-993A-A61FC844F6C9'}));
+// app.use(express.csrf());
+// 
+app.use(express.cookieParser());
+app.use(express.session({
+	secret: 'secret',
+	cookie: {
+		secure: false,
+		maxAge: new Date(Date.now() + 60 * 60 * 1000)
+	},
+	store: new skinStore(db)
+})); 
 
 
-app.use(lessMiddleware(path.join(__dirname, 'public')));
+// app.use(lessMiddleware(path.join(__dirname, 'public')));
 // The other static files are also in the public folder
 app.use(express.static(__dirname + '/public'));
 
 // This is how we expose csrf to templates
-app.use(function (req, res, next) {
-	res.locals._csrf = req.session._csrf;
-	return next();
-});
+// app.use(function (req, res, next) {
+// 	res.locals._csrf = req.session._csrf;
+// 	return next();
+// });
 
 app.use(app.router);
 
@@ -74,7 +86,16 @@ app.param('task_id', function (req, res, next, taskId) {
 	});
 });
 
-app.get('/', routes.index);
+var loginCheck = function(req, res, next) {
+	if (req.session.user){
+		res.redirect('/tasks');
+	} else {
+		res.redirect('/login');
+	}
+};
+app.get('/', tasks.list);
+// app.get('/', loginCheck, routes.index);
+// app.get('/login', login.login);
 app.get('/tasks', tasks.list);
 app.post('/tasks', tasks.markAllCompleted);
 app.post('/tasks', tasks.add);

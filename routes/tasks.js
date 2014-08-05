@@ -25,7 +25,6 @@ exports.add = function (req, res, next) {
 	}, function (err, task) {
 		if (err) return next(err);
 		if (!task) return next(new Error('failed to save'));
-		console.log('Added %s with id=%s', task.name, task._id);
 		res.redirect('/tasks');
 	});
 };
@@ -40,7 +39,6 @@ exports.markAllCompleted = function (req, res, next) {
 	{multi: true},
 	function (err, count) {
 		if (err) return next(err);
-		console.info('Marked %s task(s) completed.', count);
 		res.redirect('/tasks');
 	});
 };
@@ -64,7 +62,6 @@ exports.markCompleted = function (req, res, next) {
 	}, function (err, count) {
 		if (err) return next(err);
 		if (count !==1) return next(new Error('Something went wrong'));
-		console.info('Marked task %s with id=%s completed.', req.task.name, req.task._id);
 		res.redirect('/tasks');
 	});
 };
@@ -73,7 +70,6 @@ exports.del = function (req, res, next) {
 	req.db.tasks.removeById(req.task._id, function (err, count) {
 		if (err) return next(err);
 		if (count !==1) return next(new Error('Something went wrong.'));
-		console.info('Deleted task %s with id=%s completed.', req.task.name, req.task._id);
 		res.send(200);
 	});
 };

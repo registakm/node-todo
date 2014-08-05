@@ -3,8 +3,7 @@ extends layout
 block content
   .menu
     div.list-group.side-nav
-      a(href="/", class="list-group-item") Home
-      a(href="/tasks", class="list-group-item active") Todo List
+      a(href="/", class="list-group-item active") List
       a(href="/tasks/completed", class="list-group-item") Completed
 
   h1= title
@@ -13,13 +12,16 @@ block content
     div.action
       form(action="/tasks", method="POST")
         input(type="hidden", value="true", name="all_done")
-        input(type="hidden", value=locals._csrf, name="_csrf")
+        //- input(type="hidden", value=locals._csrf, name="_csrf")
         input(type="submit", class="btn btn-success btn-xs", value="all done")
       form(action="/tasks", method="POST" role="form")
-        input(type="hidden", value=locals._csrf, name="_csrf")
+        //- input(type="hidden", value=locals._csrf, name="_csrf")
         div.name
           input(type="text", name="name", placeholder="Add new task", class="form-control")
-          input.btn.btn-primary.btn-sm.add(type="submit", value='add')
+        div.input_are.btn.btn-primary
+          i.fa.fa-plus
+          input(type="submit", value='add')
+
       if (tasks.length === 0)
         | No tasks.
       ul.list-group
@@ -30,7 +32,7 @@ block content
               form(action='/tasks/#{task._id}', method='post')
                 input(type="hidden", value=task._id.toString(), name="id")
                 input(type='hidden', value='true', name='completed')
-                input(type='hidden', value=locals._csrf, name='_csrf')
+                //- input(type='hidden', value=locals._csrf, name='_csrf')
                 input(type='submit', class='btn btn-success btn-xs task-done', value='done')
             span.delete
-              a(class='btn btn-danger btn-xs task-delete', data-task-id=task._id.toString(), data-csrf=locals._csrf) delete
+              a(class='btn btn-danger btn-xs task-delete', data-task-id=task._id.toString()) delete
